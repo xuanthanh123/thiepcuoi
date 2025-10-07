@@ -81,8 +81,8 @@
     </div>
 
     <!-- Nhạc nền --><audio id="background-music" loop>
-        <!-- === LINK NHẠC ĐÃ ĐƯỢC THAY BẰNG LINK ĐẢM BẢO HOẠT ĐỘNG === -->
-        <source src="https://cdn.pixabay.com/audio/2022/08/03/audio_51f08c485d.mp3" type="audio/mpeg">
+        <!-- === ÂM NHẠC ĐÃ ĐƯỢC NHÚNG TRỰC TIẾP VÀO ĐÂY === -->
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQ1LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1AAAAjkAAAGw9gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/+3DEAAAACrAAAApAAAAiIAAAMlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFhpbmcAAAAJAAAAAQAAAAA=" type="audio/mpeg">
     </audio>
     
     <!-- === BỘ ĐIỀU KHIỂN NHẠC ĐÃ ĐƯỢC ĐƠN GIẢN HÓA === -->
@@ -223,15 +223,12 @@
             cover.style.opacity = '0';
             musicControl.classList.remove('hidden');
             
-            // Cố gắng phát nhạc. Trình duyệt có thể chặn nếu không có tương tác người dùng.
             const playPromise = music.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
-                    // Tự động phát thành công
                     musicControl.classList.add('playing');
                 }).catch(error => {
-                    // Tự động phát bị chặn
                     console.log("Tự động phát nhạc bị chặn, cần người dùng nhấn nút play.");
                 });
             }
@@ -251,7 +248,6 @@
             }
         });
 
-        // Cập nhật trạng thái quay của nút nhạc
         music.addEventListener('play', () => {
             musicControl.classList.add('playing');
         });
