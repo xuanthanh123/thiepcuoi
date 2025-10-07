@@ -201,7 +201,6 @@
         const nextButton = document.getElementById('next-song');
         const prevButton = document.getElementById('prev-song');
 
-        // === DANH SÁCH PHÁT NHẠC ĐÃ ĐƯỢC MỞ RỘNG ===
         const playlist = [
             'https://cdn.pixabay.com/audio/2022/11/23/audio_85d53953b6.mp3', // A Beautiful Piece
             'https://cdn.pixabay.com/audio/2022/08/03/audio_51f08c485d.mp3', // Romantic Piano
@@ -212,52 +211,74 @@
         ];
         let currentSongIndex = 0;
 
-        // Hàm để tải và phát một bài hát
-        function loadSong(index) {
+        // === LOGIC PHÁT NHẠC ĐÃ ĐƯỢC VIẾT LẠI HOÀN TOÀN ===
+        
+        function updatePlayPauseIcon(isPlaying) {
+            if (isPlaying) {
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
+            } else {
+                playPauseIcon.classList.remove('fa-pause');
+                playPauseIcon.classList.add('fa-play');
+            }
+        }
+
+        function loadAndPlaySong(index) {
             music.src = playlist[index];
-            music.play().catch(e => console.log("Trình duyệt đã chặn tự động phát nhạc."));
-            playPauseIcon.classList.remove('fa-play');
-            playPauseIcon.classList.add('fa-pause');
+            const playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    updatePlayPauseIcon(true);
+                }).catch(error => {
+                    console.error("Lỗi phát nhạc:", error);
+                    updatePlayPauseIcon(false);
+                });
+            }
         }
 
         openButton.addEventListener('click', () => {
+            // Hiển thị giao diện trước
             cover.style.opacity = '0';
-            loadSong(currentSongIndex);
             musicControlContainer.classList.remove('hidden');
-
-            setTimeout(() => {
+             setTimeout(() => {
                 cover.style.display = 'none';
                 mainContent.style.opacity = '1';
                 document.querySelector('.fade-in')?.classList.add('visible');
             }, 1000);
+
+            // Bắt đầu phát nhạc
+            loadAndPlaySong(currentSongIndex);
         });
         
         playPauseButton.addEventListener('click', () => {
             if (music.paused) {
-                music.play();
-                playPauseIcon.classList.remove('fa-play');
-                playPauseIcon.classList.add('fa-pause');
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => updatePlayPauseIcon(true)).catch(() => updatePlayPauseIcon(false));
+                }
             } else {
                 music.pause();
-                playPauseIcon.classList.remove('fa-pause');
-                playPauseIcon.classList.add('fa-play');
+                updatePlayPauseIcon(false);
             }
         });
 
         nextButton.addEventListener('click', () => {
-            currentSongIndex = (currentSongIndex + 1) % playlist.length; // Chuyển tới và quay lại từ đầu
-            loadSong(currentSongIndex);
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadAndPlaySong(currentSongIndex);
         });
 
         prevButton.addEventListener('click', () => {
-            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length; // Chuyển lùi và quay lại từ cuối
-            loadSong(currentSongIndex);
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadAndPlaySong(currentSongIndex);
         });
 
-        // Tự động phát bài tiếp theo khi hết bài
         music.addEventListener('ended', () => {
             nextButton.click();
         });
+        music.addEventListener('play', () => updatePlayPauseIcon(true));
+        music.addEventListener('pause', () => updatePlayPauseIcon(false));
+
 
         // 2. Đồng hồ đếm ngược
         const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
