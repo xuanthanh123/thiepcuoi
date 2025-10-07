@@ -211,34 +211,28 @@
         ];
         let currentSongIndex = 0;
 
-        // === LOGIC PHÁT NHẠC ĐÃ ĐƯỢC VIẾT LẠI HOÀN TOÀN ===
+        // === LOGIC PHÁT NHẠC ĐÃ ĐƯỢC SỬA LỖI ===
         
-        function updatePlayPauseIcon(isPlaying) {
-            if (isPlaying) {
-                playPauseIcon.classList.remove('fa-play');
-                playPauseIcon.classList.add('fa-pause');
-            } else {
+        // Cập nhật icon dựa trên trạng thái của audio
+        function updatePlayPauseIcon() {
+            if (music.paused) {
                 playPauseIcon.classList.remove('fa-pause');
                 playPauseIcon.classList.add('fa-play');
+            } else {
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
             }
         }
 
         function loadAndPlaySong(index) {
             music.src = playlist[index];
-            const playPromise = music.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    updatePlayPauseIcon(true);
-                }).catch(error => {
-                    console.error("Lỗi phát nhạc:", error);
-                    updatePlayPauseIcon(false);
-                });
-            }
+            music.play().catch(error => {
+                console.error("Lỗi phát nhạc tự động, cần người dùng tương tác:", error);
+                updatePlayPauseIcon(); // Cập nhật icon về trạng thái play
+            });
         }
 
         openButton.addEventListener('click', () => {
-            // Hiển thị giao diện trước
             cover.style.opacity = '0';
             musicControlContainer.classList.remove('hidden');
              setTimeout(() => {
@@ -247,19 +241,14 @@
                 document.querySelector('.fade-in')?.classList.add('visible');
             }, 1000);
 
-            // Bắt đầu phát nhạc
             loadAndPlaySong(currentSongIndex);
         });
         
         playPauseButton.addEventListener('click', () => {
             if (music.paused) {
-                const playPromise = music.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => updatePlayPauseIcon(true)).catch(() => updatePlayPauseIcon(false));
-                }
+                music.play().catch(e => console.error("Lỗi khi nhấn play:", e));
             } else {
                 music.pause();
-                updatePlayPauseIcon(false);
             }
         });
 
@@ -273,11 +262,12 @@
             loadAndPlaySong(currentSongIndex);
         });
 
+        // Dùng sự kiện của audio để cập nhật icon, đảm bảo luôn chính xác
+        music.addEventListener('play', updatePlayPauseIcon);
+        music.addEventListener('pause', updatePlayPauseIcon);
         music.addEventListener('ended', () => {
             nextButton.click();
         });
-        music.addEventListener('play', () => updatePlayPauseIcon(true));
-        music.addEventListener('pause', () => updatePlayPauseIcon(false));
 
 
         // 2. Đồng hồ đếm ngược
