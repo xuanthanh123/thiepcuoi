@@ -18,16 +18,18 @@
         .font-dancing {
             font-family: 'Dancing Script', cursive;
         }
-        /* Hiệu ứng mờ dần khi cuộn trang */
-        .fade-in {
+        
+        /* Hiệu ứng trượt lên khi cuộn */
+        .scroll-reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .fade-in.visible {
+        .scroll-reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
+
         /* Hiệu ứng trái tim đập */
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
@@ -36,6 +38,7 @@
         .heart-pulse {
             animation: pulse 2s infinite;
         }
+        
         /* Nút điều khiển nhạc */
         #music-control-container button {
             transition: transform 0.2s ease-in-out;
@@ -43,26 +46,64 @@
         #music-control-container button:hover {
             transform: scale(1.1);
         }
+
+        /* Hiệu ứng cánh hoa rơi */
+        #petal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 99;
+        }
+        .petal {
+            position: absolute;
+            background-color: #ffc0cb; /* Màu hồng phấn */
+            border-radius: 50% 0;
+            opacity: 0.7;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Hiệu ứng cánh cửa mở ra */
+        #left-door, #right-door {
+            transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="bg-[#FFF8F3] text-[#6D4C41]">
 
-    <!-- Lớp phủ ban đầu --><div id="cover" class="fixed inset-0 bg-[#FFF8F3] z-50 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-1000">
-        <h1 class="font-dancing text-5xl md:text-7xl text-[#BF9270]">Save the Date</h1>
+    <!-- Hiệu ứng cánh hoa rơi --><div id="petal-container"></div>
+
+    <!-- Lớp phủ ban đầu với hiệu ứng mở cửa -->
+    <div id="cover" class="fixed inset-0 z-50 overflow-hidden">
+        <!-- Cửa trái và phải -->
+        <div id="left-door" class="absolute top-0 left-0 w-1/2 h-full bg-[#FFF8F3]"></div>
+        <div id="right-door" class="absolute top-0 right-0 w-1/2 h-full bg-[#FFF8F3]"></div>
         
-        <img src="https://i.postimg.cc/y8bCrr9H/e11fd31934afbef1e7be2.jpg" alt="Cặp đôi" class="rounded-full w-48 h-48 my-8 object-cover border-4 border-[#BF9270] shadow-lg">
-        
-        <h2 class="text-xl md:text-2xl font-semibold">Xuân Thành & Tường Vân</h2>
-        <p class="mt-4">Trân trọng mời bạn đến chung vui cùng chúng tôi</p>
-        <button id="open-invitation" class="mt-8 bg-[#BF9270] text-white py-3 px-8 rounded-full shadow-lg hover:bg-[#aA7e5d] transition-transform transform hover:scale-105">
-            Mở Thiệp & Nghe Nhạc
-        </button>
+        <!-- Nội dung trên cửa, sẽ mờ đi -->
+        <!-- === ĐÃ THÊM opacity-0 ĐỂ ẨN BAN ĐẦU, CHỜ FONT LOAD XONG === -->
+        <div id="cover-content" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-1000 opacity-0">
+            <h1 class="font-dancing text-5xl md:text-7xl text-[#BF9270]">Save the Date</h1>
+            <img src="https://i.postimg.cc/y8bCrr9H/e11fd31934afbef1e7be2.jpg" alt="Cặp đôi" class="rounded-full w-48 h-48 my-8 object-cover border-4 border-[#BF9270] shadow-lg">
+            <h2 class="text-xl md:text-2xl font-semibold">Xuân Thành & Tường Vân</h2>
+            <p class="mt-4">Trân trọng mời bạn đến chung vui cùng chúng tôi</p>
+            <button id="open-invitation" class="mt-8 bg-[#BF9270] text-white py-3 px-8 rounded-full shadow-lg hover:bg-[#aA7e5d] transition-transform transform hover:scale-105">
+                Mở Thiệp & Nghe Nhạc
+            </button>
+        </div>
     </div>
+
 
     <!-- Nhạc nền --><audio id="background-music" loop></audio>
     
-    <!-- === BỘ ĐIỀU KHIỂN PLAYLIST ĐÃ ĐƯỢC THÊM LẠI === -->
-    <div id="music-control-container" class="hidden fixed bottom-5 right-5 z-50 flex items-center gap-2">
+    <!-- Bộ điều khiển playlist --><div id="music-control-container" class="hidden fixed bottom-5 right-5 z-50 flex items-center gap-2">
         <button id="prev-song" class="w-12 h-12 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-backward"></i></button>
         <button id="play-pause" class="w-14 h-14 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg text-xl"><i class="fas fa-play"></i></button>
         <button id="next-song" class="w-12 h-12 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-forward"></i></button>
@@ -71,7 +112,7 @@
 
     <!-- Nội dung chính của thiệp --><div id="main-content" class="max-w-2xl mx-auto opacity-0 transition-opacity duration-1000">
 
-        <!-- Banner chính --><header class="relative text-center text-white fade-in">
+        <!-- Banner chính --><header class="relative text-center text-white scroll-reveal">
              
              <img src="https://i.postimg.cc/FFYjXGPC/a071660fc7b94de714a83.jpg" 
                  alt="Ảnh cưới cô dâu chú rể" 
@@ -87,7 +128,7 @@
             </div>
         </header>
 
-        <!-- Lời mời --><section class="text-center p-8 md:p-12 fade-in">
+        <!-- Lời mời --><section class="text-center p-8 md:p-12 scroll-reveal">
             <h2 class="font-dancing text-4xl text-[#BF9270]">Lời Mời Thân Mật</h2>
             <p class="mt-4 max-w-lg mx-auto leading-relaxed">
                 "Tình yêu không phải là nhìn về phía nhau, mà là cùng nhau nhìn về một hướng."
@@ -96,16 +137,16 @@
             </p>
         </section>
 
-        <!-- Thông tin cô dâu chú rể --><section class="p-8 md:p-12 fade-in">
+        <!-- Thông tin cô dâu chú rể --><section class="p-8 md:p-12 scroll-reveal">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 items-center text-center">
-                 <!-- Chú rể --><div class="fade-in">
+                 <!-- Chú rể --><div class="scroll-reveal">
                      
                      <img src="https://i.postimg.cc/N09QxwKM/da7cd8693fdfb581ecce1.jpg" alt="Chú rể" class="w-40 h-48 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 40%;">
                     
                     <h3 class="font-dancing text-4xl mt-4 text-[#BF9270]">Xuân Thành</h3>
                     <p class="mt-2">Con trai út trong gia đình</p>
                 </div>
-                <!-- Cô dâu --><div class="fade-in">
+                <!-- Cô dâu --><div class="scroll-reveal">
 
                     <img src="https://i.postimg.cc/T3x5BzYK/7e644a61c0d04a8e13c1.jpg" alt="Cô dâu" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 50%;">
                     
@@ -115,7 +156,7 @@
             </div>
         </section>
         
-        <!-- Chuyện Tình Yêu --><section class="p-8 md:p-12 text-center bg-white fade-in">
+        <!-- Chuyện Tình Yêu --><section class="p-8 md:p-12 text-center bg-white scroll-reveal">
              <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Chuyện Tình Yêu</h2>
              <p class="max-w-prose mx-auto leading-relaxed">
                 Định mệnh đã cho chúng tôi gặp nhau giữa dòng đời vội vã. Từ những bỡ ngỡ ban đầu, chúng tôi đã cùng nhau vun đắp một tình yêu chân thành, cùng sẻ chia những vui buồn, và cùng nhau hướng về một tương lai hạnh phúc. Hôm nay, chúng tôi vui mừng báo tin đến bạn về một chương mới trong câu chuyện tình yêu này.
@@ -123,7 +164,7 @@
         </section>
 
 
-        <!-- Đếm ngược ngày cưới --><section class="bg-cover bg-center py-16 text-center text-white fade-in" style="background-image: url('https://images.unsplash.com/photo-1515934751635-481eff0483b2?q=80&w=2070&auto=format&fit=crop')">
+        <!-- Đếm ngược ngày cưới --><section class="bg-cover bg-center py-16 text-center text-white scroll-reveal" style="background-image: url('https://images.unsplash.com/photo-1515934751635-481eff0483b2?q=80&w=2070&auto=format&fit=crop')">
             <div class="bg-black bg-opacity-40 py-12">
                 <h2 class="font-dancing text-4xl">Ngày Chung Đôi</h2>
                 <div id="countdown" class="flex justify-center gap-4 md:gap-8 mt-6 text-2xl md:text-4xl">
@@ -135,7 +176,7 @@
             </div>
         </section>
         
-        <!-- Album ảnh cưới --><section class="p-8 md:p-12 text-center fade-in">
+        <!-- Album ảnh cưới --><section class="p-8 md:p-12 text-center scroll-reveal">
             <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Khoảnh Khắc Đáng Nhớ</h2>
             
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -148,7 +189,7 @@
             </div>
         </section>
         
-        <!-- Thông tin sự kiện --><section class="p-8 md:p-12 text-center fade-in bg-white">
+        <!-- Thông tin sự kiện --><section class="p-8 md:p-12 text-center bg-white scroll-reveal">
             <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Thông Tin Hôn Lễ</h2>
             <div class="flex flex-col md:flex-row justify-center gap-8">
                 <div class="bg-[#FFF8F3] p-6 rounded-lg shadow-lg flex-1">
@@ -169,7 +210,7 @@
             </div>
         </section>
         
-        <!-- Bản đồ --><section class="p-8 md:p-12 text-center fade-in">
+        <!-- Bản đồ --><section class="p-8 md:p-12 text-center scroll-reveal">
              <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Địa Điểm Tổ Chức</h2>
              <div class="w-full h-80 rounded-lg shadow-lg overflow-hidden">
                 <iframe 
@@ -179,7 +220,7 @@
              </div>
         </section>
 
-        <!-- Lời cảm ơn --><footer class="text-center p-12 fade-in">
+        <!-- Lời cảm ơn --><footer class="text-center p-12 scroll-reveal">
              <div class="heart-pulse text-4xl text-red-400 mb-4">❤️</div>
              <p class="font-dancing text-4xl text-[#BF9270]">Trân Trọng Cảm Ơn!</p>
              <p class="mt-2">Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi.</p>
@@ -187,132 +228,147 @@
     </div>
 
     <script>
-        // --- PHẦN JAVASCRIPT ĐIỀU KHIỂN HIỆU ỨNG ---
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- PHẦN JAVASCRIPT ĐIỀU KHIỂN HIỆU ỨNG ---
 
-        // 1. Hiệu ứng mở thiệp và nhạc
-        const cover = document.getElementById('cover');
-        const openButton = document.getElementById('open-invitation');
-        const mainContent = document.getElementById('main-content');
-        const music = document.getElementById('background-music');
-        
-        const musicControlContainer = document.getElementById('music-control-container');
-        const playPauseButton = document.getElementById('play-pause');
-        const playPauseIcon = playPauseButton.querySelector('i');
-        const nextButton = document.getElementById('next-song');
-        const prevButton = document.getElementById('prev-song');
+            // === ĐOẠN MÃ MỚI: CHỜ FONT LOAD XONG MỚI HIỆN NỘI DUNG ===
+            const coverContent = document.getElementById('cover-content');
+            document.fonts.ready.then(function () {
+                // Khi font đã tải xong, hiện nội dung trên cửa
+                coverContent.classList.remove('opacity-0');
+            });
 
-        // === DANH SÁCH PHÁT ĐÃ ĐƯỢC MỞ RỘNG LÊN 8 BÀI ===
-        const playlist = [
-            'song1.mp3',
-            'song2.mp3',
-            'song3.mp3',
-            'song4.mp3',
-            'song5.mp3',
-            'song6.mp3',
-            'song7.mp3',
-            'song8.mp3'
-        ];
-        let currentSongIndex = 0;
-
-        // === LOGIC PLAYLIST ĐÁNG TIN CẬY ===
-        
-        function updatePlayPauseIcon() {
-            if (music.paused) {
-                playPauseIcon.classList.remove('fa-pause');
-                playPauseIcon.classList.add('fa-play');
-            } else {
-                playPauseIcon.classList.remove('fa-play');
-                playPauseIcon.classList.add('fa-pause');
+            // Hiệu ứng cánh hoa rơi
+            const petalContainer = document.getElementById('petal-container');
+            const numberOfPetals = 20;
+            for (let i = 0; i < numberOfPetals; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                const size = Math.random() * 10 + 5;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * 0.7}px`;
+                petal.style.left = `${Math.random() * 100}vw`;
+                petal.style.animationDuration = `${Math.random() * 15 + 10}s`;
+                petal.style.animationDelay = `${Math.random() * 10}s`;
+                petalContainer.appendChild(petal);
             }
-        }
 
-        function loadAndPlaySong(index) {
-            music.src = playlist[index];
-            const playPromise = music.play();
-
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error("Lỗi phát nhạc, cần người dùng tương tác:", error);
-                    updatePlayPauseIcon();
-                });
-            }
-        }
-
-        openButton.addEventListener('click', () => {
-            cover.style.opacity = '0';
-            musicControlContainer.classList.remove('hidden');
+            const cover = document.getElementById('cover');
+            const openButton = document.getElementById('open-invitation');
+            const mainContent = document.getElementById('main-content');
+            const music = document.getElementById('background-music');
             
-            setTimeout(() => {
-                cover.style.display = 'none';
-                mainContent.style.opacity = '1';
-                document.querySelector('.fade-in')?.classList.add('visible');
-            }, 1000);
+            const musicControlContainer = document.getElementById('music-control-container');
+            const playPauseButton = document.getElementById('play-pause');
+            const playPauseIcon = playPauseButton.querySelector('i');
+            const nextButton = document.getElementById('next-song');
+            const prevButton = document.getElementById('prev-song');
 
-            loadAndPlaySong(currentSongIndex);
-        });
-        
-        playPauseButton.addEventListener('click', () => {
-            if (music.paused) {
-                music.play().catch(e => console.error("Lỗi khi nhấn play:", e));
-            } else {
-                music.pause();
-            }
-        });
+            const playlist = [
+                'song1.mp3', 'song2.mp3', 'song3.mp3', 'song4.mp3',
+                'song5.mp3', 'song6.mp3', 'song7.mp3', 'song8.mp3'
+            ];
+            let currentSongIndex = 0;
 
-        nextButton.addEventListener('click', () => {
-            currentSongIndex = (currentSongIndex + 1) % playlist.length;
-            loadAndPlaySong(currentSongIndex);
-        });
-
-        prevButton.addEventListener('click', () => {
-            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-            loadAndPlaySong(currentSongIndex);
-        });
-
-        music.addEventListener('play', updatePlayPauseIcon);
-        music.addEventListener('pause', updatePlayPauseIcon);
-        music.addEventListener('ended', () => {
-            nextButton.click();
-        });
-
-
-        // 2. Đồng hồ đếm ngược
-        const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
-
-        const countdownInterval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
-
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                document.getElementById("countdown").innerHTML = "<p>Lễ cưới đã diễn ra!</p>";
-                return;
+            function updatePlayPauseIcon() {
+                playPauseIcon.classList.toggle('fa-play', music.paused);
+                playPauseIcon.classList.toggle('fa-pause', !music.paused);
             }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            function loadAndPlaySong(index) {
+                music.src = playlist[index];
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error("Lỗi phát nhạc, cần người dùng tương tác:", error);
+                        updatePlayPauseIcon();
+                    });
+                }
+            }
 
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            // Hiệu ứng mở cửa khi click
+            openButton.addEventListener('click', () => {
+                const leftDoor = document.getElementById('left-door');
+                const rightDoor = document.getElementById('right-door');
 
-        }, 1000);
-        
-        // 3. Hiệu ứng mờ dần khi cuộn trang
-        const fadeInElements = document.querySelectorAll('.fade-in');
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                // 1. Mờ nội dung trên cửa (đã có class transition)
+                coverContent.style.opacity = '0';
+                
+                // 2. Bắt đầu phát nhạc
+                loadAndPlaySong(currentSongIndex);
+                musicControlContainer.classList.remove('hidden');
+
+                // 3. Mở cửa sau một khoảng trễ ngắn
+                setTimeout(() => {
+                    leftDoor.style.transform = 'translateX(-100%)';
+                    rightDoor.style.transform = 'translateX(100%)';
+                }, 300);
+
+                // 4. Ẩn hoàn toàn lớp phủ và hiện nội dung chính sau khi cửa mở xong
+                setTimeout(() => {
+                    cover.style.display = 'none';
+                    mainContent.style.opacity = '1';
+                    document.querySelector('.scroll-reveal')?.classList.add('visible');
+                }, 1500); // 300ms + 1200ms animation
+            });
+            
+            playPauseButton.addEventListener('click', () => {
+                if (music.paused) {
+                    music.play().catch(e => console.error("Lỗi khi nhấn play:", e));
+                } else {
+                    music.pause();
                 }
             });
-        }, { threshold: 0.1 });
 
-        fadeInElements.forEach(el => observer.observe(el));
+            nextButton.addEventListener('click', () => {
+                currentSongIndex = (currentSongIndex + 1) % playlist.length;
+                loadAndPlaySong(currentSongIndex);
+            });
+
+            prevButton.addEventListener('click', () => {
+                currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+                loadAndPlaySong(currentSongIndex);
+            });
+
+            music.addEventListener('play', updatePlayPauseIcon);
+            music.addEventListener('pause', updatePlayPauseIcon);
+            music.addEventListener('ended', () => { nextButton.click(); });
+
+            // Hiệu ứng trượt lên khi cuộn
+            const scrollElements = document.querySelectorAll('.scroll-reveal');
+            const elementObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            scrollElements.forEach(el => elementObserver.observe(el));
+
+            // Đồng hồ đếm ngược
+            const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
+            const countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = weddingDate - now;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById("countdown").innerHTML = "<p>Lễ cưới đã diễn ra!</p>";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days).padStart(2, '0');
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            }, 1000);
+        });
     </script>
 </body>
 </html>
