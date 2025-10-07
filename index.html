@@ -37,28 +37,11 @@
             animation: pulse 2s infinite;
         }
         /* Nút điều khiển nhạc */
-        #music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background-color: #BF9270;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        #music-control-container button {
+            transition: transform 0.2s ease-in-out;
         }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        #music-control.playing .fa-music {
-            animation: spin 3s linear infinite;
+        #music-control-container button:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -76,12 +59,15 @@
         </button>
     </div>
 
-    <!-- Nhạc nền --><audio id="background-music" loop>
-        <!-- === NHẠC NỀN ĐÃ ĐƯỢC THAY ĐỔI === --><source src="https://cdn.pixabay.com/audio/2023/10/01/audio_731a02b62c.mp3" type="audio/mpeg">
-    </audio>
-    <div id="music-control" class="hidden">
-        <i class="fas fa-music"></i>
+    <!-- Nhạc nền --><audio id="background-music" loop></audio>
+    
+    <!-- === BỘ ĐIỀU KHIỂN NHẠC ĐÃ ĐƯỢC CẬP NHẬT === -->
+    <div id="music-control-container" class="hidden fixed bottom-5 right-5 z-50 flex items-center gap-2">
+        <button id="prev-song" class="w-12 h-12 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-backward"></i></button>
+        <button id="play-pause" class="w-14 h-14 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg text-xl"><i class="fas fa-play"></i></button>
+        <button id="next-song" class="w-12 h-12 bg-[#BF9270] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-forward"></i></button>
     </div>
+
 
     <!-- Nội dung chính của thiệp --><div id="main-content" class="max-w-2xl mx-auto opacity-0 transition-opacity duration-1000">
 
@@ -208,13 +194,36 @@
         const openButton = document.getElementById('open-invitation');
         const mainContent = document.getElementById('main-content');
         const music = document.getElementById('background-music');
-        const musicControl = document.getElementById('music-control');
+        
+        const musicControlContainer = document.getElementById('music-control-container');
+        const playPauseButton = document.getElementById('play-pause');
+        const playPauseIcon = playPauseButton.querySelector('i');
+        const nextButton = document.getElementById('next-song');
+        const prevButton = document.getElementById('prev-song');
+
+        // === DANH SÁCH PHÁT NHẠC ĐÃ ĐƯỢC MỞ RỘNG ===
+        const playlist = [
+            'https://cdn.pixabay.com/audio/2022/11/23/audio_85d53953b6.mp3', // A Beautiful Piece
+            'https://cdn.pixabay.com/audio/2022/08/03/audio_51f08c485d.mp3', // Romantic Piano
+            'https://cdn.pixabay.com/audio/2022/05/27/audio_1437162a83.mp3', // The Cradle of Your Soul
+            'https://cdn.pixabay.com/audio/2024/05/17/audio_02c63c4423.mp3', // Inspiring Cinematic
+            'https://cdn.pixabay.com/audio/2022/11/17/audio_88b14a68c7.mp3', // Just Relax
+            'https://cdn.pixabay.com/audio/2022/02/14/audio_206a0e69a2.mp3'  // Wedding Day
+        ];
+        let currentSongIndex = 0;
+
+        // Hàm để tải và phát một bài hát
+        function loadSong(index) {
+            music.src = playlist[index];
+            music.play().catch(e => console.log("Trình duyệt đã chặn tự động phát nhạc."));
+            playPauseIcon.classList.remove('fa-play');
+            playPauseIcon.classList.add('fa-pause');
+        }
 
         openButton.addEventListener('click', () => {
             cover.style.opacity = '0';
-            music.play();
-            musicControl.classList.add('playing');
-            musicControl.classList.remove('hidden');
+            loadSong(currentSongIndex);
+            musicControlContainer.classList.remove('hidden');
 
             setTimeout(() => {
                 cover.style.display = 'none';
@@ -223,18 +232,34 @@
             }, 1000);
         });
         
-        musicControl.addEventListener('click', () => {
+        playPauseButton.addEventListener('click', () => {
             if (music.paused) {
                 music.play();
-                musicControl.classList.add('playing');
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
             } else {
                 music.pause();
-                musicControl.classList.remove('playing');
+                playPauseIcon.classList.remove('fa-pause');
+                playPauseIcon.classList.add('fa-play');
             }
         });
 
+        nextButton.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length; // Chuyển tới và quay lại từ đầu
+            loadSong(currentSongIndex);
+        });
+
+        prevButton.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length; // Chuyển lùi và quay lại từ cuối
+            loadSong(currentSongIndex);
+        });
+
+        // Tự động phát bài tiếp theo khi hết bài
+        music.addEventListener('ended', () => {
+            nextButton.click();
+        });
+
         // 2. Đồng hồ đếm ngược
-        // --- NGÀY CƯỚI ĐÃ ĐƯỢC CẬP NHẬT ---
         const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
 
         const countdownInterval = setInterval(() => {
