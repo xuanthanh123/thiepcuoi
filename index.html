@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Cưới Online - Xuân Thành & Tường Vân</title>
+    <!-- Tích hợp Tailwind CSS để thiết kế giao diện --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tích hợp Google Fonts --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Icon cho nút nhạc --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Tùy chỉnh font chữ */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-dancing {
+            font-family: 'Dancing Script', cursive;
+        }
+        /* Hiệu ứng mờ dần khi cuộn trang */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Hiệu ứng trái tim đập */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .heart-pulse {
+            animation: pulse 2s infinite;
+        }
+        /* Nút điều khiển nhạc */
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #BF9270;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #music-control.playing .fa-music {
+            animation: spin 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-[#FFF8F3] text-[#6D4C41]">
+
+    <!-- Lớp phủ ban đầu --><div id="cover" class="fixed inset-0 bg-[#FFF8F3] z-50 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-1000">
+        <h1 class="font-dancing text-5xl md:text-7xl text-[#BF9270]">Save the Date</h1>
+        
+        <!-- === ẢNH BÌA ĐÃ ĐƯỢC CẬP NHẬT === --><img src="https://i.postimg.cc/y8bCrr9H/e11fd31934afbef1e7be2.jpg" alt="Cặp đôi" class="rounded-full w-48 h-48 my-8 object-cover border-4 border-[#BF9270] shadow-lg">
+        
+        <h2 class="text-xl md:text-2xl font-semibold">Xuân Thành & Tường Vân</h2>
+        <p class="mt-4">Trân trọng mời bạn đến chung vui cùng chúng tôi</p>
+        <button id="open-invitation" class="mt-8 bg-[#BF9270] text-white py-3 px-8 rounded-full shadow-lg hover:bg-[#aA7e5d] transition-transform transform hover:scale-105">
+            Mở Thiệp & Nghe Nhạc
+        </button>
+    </div>
+
+    <!-- Nhạc nền --><audio id="background-music" loop>
+        <!-- === NHẠC NỀN ĐÃ ĐƯỢC THAY ĐỔI === --><source src="https://cdn.pixabay.com/audio/2023/10/01/audio_731a02b62c.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-control" class="hidden">
+        <i class="fas fa-music"></i>
+    </div>
+
+    <!-- Nội dung chính của thiệp --><div id="main-content" class="max-w-2xl mx-auto opacity-0 transition-opacity duration-1000">
+
+        <!-- Banner chính --><header class="relative text-center text-white fade-in">
+             
+             <!-- === 2. THAY ẢNH CƯỚI CHÍNH CỦA BẠN TẠI ĐÂY === --><!-- Dán link ảnh trực tiếp vào thuộc tính src="..." bên dưới --><img src="https://i.postimg.cc/FFYjXGPC/a071660fc7b94de714a83.jpg" 
+                 alt="Ảnh cưới cô dâu chú rể" 
+                 class="w-full h-[50vh] md:h-[70vh] object-cover"
+                 style="object-position: center 25%;"
+                 onerror="this.onerror=null;this.src='https://placehold.co/800x1200/e2e8f0/64748b?text=Ảnh+Cưới';">
+            
+            <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center p-4 pt-56">
+                <p class="text-lg">Trân trọng báo tin & kính mời</p>
+                <h1 class="font-dancing text-4xl md:text-6xl my-4">Xuân Thành & Tường Vân</h1>
+                <p class="text-lg">Sẽ kết hôn vào</p>
+                <p class="text-2xl font-bold mt-2">30 . 11 . 2025</p>
+            </div>
+        </header>
+
+        <!-- Lời mời --><section class="text-center p-8 md:p-12 fade-in">
+            <h2 class="font-dancing text-4xl text-[#BF9270]">Lời Mời Thân Mật</h2>
+            <p class="mt-4 max-w-lg mx-auto leading-relaxed">
+                "Tình yêu không phải là nhìn về phía nhau, mà là cùng nhau nhìn về một hướng."
+                <br><br>
+                Sự hiện diện của bạn là món quà quý giá nhất trong ngày trọng đại của chúng tôi. Kính mong bạn dành chút thời gian đến chung vui và chúc phúc!
+            </p>
+        </section>
+
+        <!-- Thông tin cô dâu chú rể --><section class="p-8 md:p-12 fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 items-center text-center">
+                 <!-- Chú rể --><div class="fade-in">
+                     
+                     <!-- === ẢNH CHÚ RỂ ĐÃ ĐƯỢC CẬP NHẬT === --><img src="https://i.postimg.cc/N09QxwKM/da7cd8693fdfb581ecce1.jpg" alt="Chú rể" class="w-40 h-48 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 40%;">
+                    
+                    <h3 class="font-dancing text-4xl mt-4 text-[#BF9270]">Xuân Thành</h3>
+                    <p class="mt-2">Con trai út trong gia đình</p>
+                </div>
+                <!-- Cô dâu --><div class="fade-in">
+
+                    <!-- === ẢNH CÔ DÂU ĐÃ ĐƯỢC CẬP NHẬT === --><img src="https://i.postimg.cc/T3x5BzYK/7e644a61c0d04a8e13c1.jpg" alt="Cô dâu" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 50%;">
+                    
+                    <h3 class="font-dancing text-4xl mt-4 text-[#BF9270]">Tường Vân</h3>
+                    <p class="mt-2">Con gái út trong gia đình</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Chuyện Tình Yêu --><section class="p-8 md:p-12 text-center bg-white fade-in">
+             <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Chuyện Tình Yêu</h2>
+             <p class="max-w-prose mx-auto leading-relaxed">
+                Định mệnh đã cho chúng tôi gặp nhau giữa dòng đời vội vã. Từ những bỡ ngỡ ban đầu, chúng tôi đã cùng nhau vun đắp một tình yêu chân thành, cùng sẻ chia những vui buồn, và cùng nhau hướng về một tương lai hạnh phúc. Hôm nay, chúng tôi vui mừng báo tin đến bạn về một chương mới trong câu chuyện tình yêu này.
+             </p>
+        </section>
+
+
+        <!-- Đếm ngược ngày cưới --><section class="bg-cover bg-center py-16 text-center text-white fade-in" style="background-image: url('https://images.unsplash.com/photo-1515934751635-481eff0483b2?q=80&w=2070&auto=format&fit=crop')">
+            <div class="bg-black bg-opacity-40 py-12">
+                <h2 class="font-dancing text-4xl">Ngày Chung Đôi</h2>
+                <div id="countdown" class="flex justify-center gap-4 md:gap-8 mt-6 text-2xl md:text-4xl">
+                    <div><span id="days">00</span><p class="text-sm">Ngày</p></div>
+                    <div><span id="hours">00</span><p class="text-sm">Giờ</p></div>
+                    <div><span id="minutes">00</span><p class="text-sm">Phút</p></div>
+                    <div><span id="seconds">00</span><p class="text-sm">Giây</p></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Album ảnh cưới --><section class="p-8 md:p-12 text-center fade-in">
+            <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Khoảnh Khắc Đáng Nhớ</h2>
+            
+            <!-- === 5. THAY ẢNH ALBUM CƯỚI CỦA BẠN TẠI ĐÂY (6 ảnh) === --><!-- Dán các link ảnh trực tiếp vào thuộc tính src="..." bên dưới --><div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <img src="https://i.postimg.cc/8cXkthvc/7b238b223694bccae585.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+                <img src="https://i.postimg.cc/tT294h26/dc22bb4306f58cabd5e4.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+                <img src="https://i.postimg.cc/L8TC7NXj/da7cd8693fdfb581ecce1.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+                <img src="https://i.postimg.cc/ZqncQm2w/e11fd31934afbef1e7be2.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+                <img src="https://i.postimg.cc/qRPgTcRY/486d1b4cbafa30a46eb2.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+                <img src="https://i.postimg.cc/dtK3CNnN/7f10062da79b2dc5748a1.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+            </div>
+        </section>
+        
+        <!-- Thông tin sự kiện --><section class="p-8 md:p-12 text-center fade-in bg-white">
+            <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Thông Tin Hôn Lễ</h2>
+            <div class="flex flex-col md:flex-row justify-center gap-8">
+                <div class="bg-[#FFF8F3] p-6 rounded-lg shadow-lg flex-1">
+                    <h3 class="font-dancing text-3xl text-[#6D4C41]">Lễ Tân Hôn</h3>
+                    <p class="text-2xl font-bold text-[#BF9270] my-2">09:00</p>
+                    <p>Chủ Nhật, ngày 30 tháng 11 năm 2025</p>
+                    <p class="mt-2">Tại tư gia</p>
+                    <p class="text-sm">Thôn 11, Xã Ea Ning, Huyện Cư Kuin, Tỉnh Đắk Lắk</p>
+                </div>
+                <div class="bg-[#FFF8F3] p-6 rounded-lg shadow-lg flex-1">
+                    <h3 class="font-dancing text-3xl text-[#6D4C41]">Tiệc Cưới</h3>
+                    <p class="mt-2">Đón khách: <span class="font-bold text-[#BF9270]">10:30</span></p>
+                    <p>Khai tiệc: <span class="font-bold text-[#BF9270]">11:00</span></p>
+                    <p>Chủ Nhật, ngày 30 tháng 11 năm 2025</p>
+                    <p class="mt-2">Tại tư gia</p>
+                    <p class="text-sm">Thôn 11, Xã Ea Ning, Huyện Cư Kuin, Tỉnh Đắk Lắk</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Bản đồ --><section class="p-8 md:p-12 text-center fade-in">
+             <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Địa Điểm Tổ Chức</h2>
+             <div class="w-full h-80 rounded-lg shadow-lg overflow-hidden">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62279.08006322964!2d108.03360444390726!3d12.531054394017688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3171f5581134a651%3A0x6b7a5223e7f4144!2zRWEgTmluZywgQ8awIEt1aW4sIMSQ4bqvayBM4bqvaywgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1696602324083!5m2!1svi!2s" 
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+             </div>
+        </section>
+
+        <!-- Lời cảm ơn --><footer class="text-center p-12 fade-in">
+             <div class="heart-pulse text-4xl text-red-400 mb-4">❤️</div>
+             <p class="font-dancing text-4xl text-[#BF9270]">Trân Trọng Cảm Ơn!</p>
+             <p class="mt-2">Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- PHẦN JAVASCRIPT ĐIỀU KHIỂN HIỆU ỨNG ---
+
+        // 1. Hiệu ứng mở thiệp và nhạc
+        const cover = document.getElementById('cover');
+        const openButton = document.getElementById('open-invitation');
+        const mainContent = document.getElementById('main-content');
+        const music = document.getElementById('background-music');
+        const musicControl = document.getElementById('music-control');
+
+        openButton.addEventListener('click', () => {
+            cover.style.opacity = '0';
+            music.play();
+            musicControl.classList.add('playing');
+            musicControl.classList.remove('hidden');
+
+            setTimeout(() => {
+                cover.style.display = 'none';
+                mainContent.style.opacity = '1';
+                document.querySelector('.fade-in')?.classList.add('visible');
+            }, 1000);
+        });
+        
+        musicControl.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                musicControl.classList.add('playing');
+            } else {
+                music.pause();
+                musicControl.classList.remove('playing');
+            }
+        });
+
+        // 2. Đồng hồ đếm ngược
+        // --- NGÀY CƯỚI ĐÃ ĐƯỢC CẬP NHẬT ---
+        const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
+
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").innerHTML = "<p>Lễ cưới đã diễn ra!</p>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+
+        }, 1000);
+        
+        // 3. Hiệu ứng mờ dần khi cuộn trang
+        const fadeInElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeInElements.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
+
