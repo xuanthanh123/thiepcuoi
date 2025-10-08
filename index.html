@@ -49,21 +49,12 @@
 
         /* Hiệu ứng cánh hoa rơi */
         #petal-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 99;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; overflow: hidden; z-index: 99;
         }
         .petal {
-            position: absolute;
-            background-color: #ffc0cb; /* Màu hồng phấn */
-            border-radius: 50% 0;
-            opacity: 0.7;
-            animation: fall linear infinite;
+            position: absolute; background-color: #ffc0cb; border-radius: 50% 0;
+            opacity: 0.7; animation: fall linear infinite;
         }
         @keyframes fall {
             0% { transform: translateY(-10vh) rotate(0deg); }
@@ -75,6 +66,44 @@
             transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1);
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
+
+        /* Lịch Cưới */
+        .calendar-day.wedding-day {
+            position: relative; color: white !important; font-weight: bold; isolation: isolate;
+        }
+        .calendar-day.wedding-day::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 36px; height: 36px;
+            background-color: #BF9270; border-radius: 50%; z-index: -1;
+        }
+        .wedding-day .fa-heart {
+            position: absolute; bottom: -2px; left: 50%;
+            transform: translateX(-50%); font-size: 8px; color: #d9534f;
+        }
+        
+        /* === HIỆU ỨNG MỚI: KEN BURNS CHO BANNER === */
+        @keyframes ken-burns {
+            0% { transform: scale(1.05) rotate(0.5deg); }
+            100% { transform: scale(1) rotate(-0.5deg); }
+        }
+        .ken-burns-effect {
+            animation: ken-burns 20s infinite alternate ease-in-out;
+        }
+
+        /* === HIỆU ỨNG MỚI: POP-IN CHO TRÁI TIM LỊCH === */
+        @keyframes pop-in {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .heart-pop {
+            transform-origin: center;
+            opacity: 0;
+        }
+        .heart-pop.visible {
+            opacity: 1;
+            animation: pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
     </style>
 </head>
 <body class="bg-[#FFF8F3] text-[#6D4C41]">
@@ -83,12 +112,9 @@
 
     <!-- Lớp phủ ban đầu với hiệu ứng mở cửa -->
     <div id="cover" class="fixed inset-0 z-50 overflow-hidden">
-        <!-- Cửa trái và phải -->
         <div id="left-door" class="absolute top-0 left-0 w-1/2 h-full bg-[#FFF8F3]"></div>
         <div id="right-door" class="absolute top-0 right-0 w-1/2 h-full bg-[#FFF8F3]"></div>
         
-        <!-- Nội dung trên cửa, sẽ mờ đi -->
-        <!-- === ĐÃ THÊM opacity-0 ĐỂ ẨN BAN ĐẦU, CHỜ FONT LOAD XONG === -->
         <div id="cover-content" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-1000 opacity-0">
             <h1 class="font-dancing text-5xl md:text-7xl text-[#BF9270]">Save the Date</h1>
             <img src="https://i.postimg.cc/y8bCrr9H/e11fd31934afbef1e7be2.jpg" alt="Cặp đôi" class="rounded-full w-48 h-48 my-8 object-cover border-4 border-[#BF9270] shadow-lg">
@@ -112,18 +138,14 @@
 
     <!-- Nội dung chính của thiệp --><div id="main-content" class="max-w-2xl mx-auto opacity-0 transition-opacity duration-1000">
 
-        <!-- Banner chính --><header class="relative text-center text-white scroll-reveal">
-             
+        <!-- Banner chính --><header class="relative text-center text-white scroll-reveal overflow-hidden">
              <img src="https://i.postimg.cc/FFYjXGPC/a071660fc7b94de714a83.jpg" 
-                 alt="Ảnh cưới cô dâu chú rể" 
-                 class="w-full h-[50vh] md:h-[70vh] object-cover"
-                 style="object-position: center 25%;"
-                 onerror="this.onerror=null;this.src='https://placehold.co/800x1200/e2e8f0/64748b?text=Ảnh+Cưới';">
-            
-            <div class="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center p-4 pt-56">
-                <p class="text-lg">Trân trọng báo tin & kính mời</p>
+                 alt="Ảnh cưới cô dâu chú rể" class="w-full h-[50vh] md:h-[70vh] object-cover ken-burns-effect"
+                 style="object-position: center 25%;" onerror="this.onerror=null;this.src='https://placehold.co/800x1200/e2e8f0/64748b?text=Ảnh+Cưới';">
+            <div id="banner-text" class="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center p-4 transition-transform duration-300 ease-out">
+                <p class="text-lg">Trân trọng báo tin Hôn lễ & Kính mời</p>
                 <h1 class="font-dancing text-4xl md:text-6xl my-4">Xuân Thành & Tường Vân</h1>
-                <p class="text-lg">Sẽ kết hôn vào</p>
+                <p class="text-lg">Chung đôi vào ngày</p>
                 <p class="text-2xl font-bold mt-2">30 . 11 . 2025</p>
             </div>
         </header>
@@ -133,23 +155,19 @@
             <p class="mt-4 max-w-lg mx-auto leading-relaxed">
                 "Tình yêu không phải là nhìn về phía nhau, mà là cùng nhau nhìn về một hướng."
                 <br><br>
-                Sự hiện diện của bạn là món quà quý giá nhất trong ngày trọng đại của chúng tôi. Kính mong bạn dành chút thời gian đến chung vui và chúc phúc!
+                Sự hiện diện của Quý vị là niềm vinh hạnh và là món quà vô giá trong ngày vui của chúng tôi. Kính mong Quý vị bớt chút thời gian quý báu đến chung vui và chúc phúc cho đôi lứa.
             </p>
         </section>
 
         <!-- Thông tin cô dâu chú rể --><section class="p-8 md:p-12 scroll-reveal">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 items-center text-center">
                  <!-- Chú rể --><div class="scroll-reveal">
-                     
                      <img src="https://i.postimg.cc/N09QxwKM/da7cd8693fdfb581ecce1.jpg" alt="Chú rể" class="w-40 h-48 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 40%;">
-                    
                     <h3 class="font-dancing text-4xl mt-4 text-[#BF9270]">Xuân Thành</h3>
                     <p class="mt-2">Con trai út trong gia đình</p>
                 </div>
                 <!-- Cô dâu --><div class="scroll-reveal">
-
                     <img src="https://i.postimg.cc/T3x5BzYK/7e644a61c0d04a8e13c1.jpg" alt="Cô dâu" class="w-40 h-40 rounded-full mx-auto object-cover border-4 border-white shadow-lg" style="object-position: center 50%;">
-                    
                     <h3 class="font-dancing text-4xl mt-4 text-[#BF9270]">Tường Vân</h3>
                     <p class="mt-2">Con gái út trong gia đình</p>
                 </div>
@@ -159,33 +177,76 @@
         <!-- Chuyện Tình Yêu --><section class="p-8 md:p-12 text-center bg-white scroll-reveal">
              <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Chuyện Tình Yêu</h2>
              <p class="max-w-prose mx-auto leading-relaxed">
-                Định mệnh đã cho chúng tôi gặp nhau giữa dòng đời vội vã. Từ những bỡ ngỡ ban đầu, chúng tôi đã cùng nhau vun đắp một tình yêu chân thành, cùng sẻ chia những vui buồn, và cùng nhau hướng về một tương lai hạnh phúc. Hôm nay, chúng tôi vui mừng báo tin đến bạn về một chương mới trong câu chuyện tình yêu này.
+                Giữa dòng đời vội vã, định mệnh đã cho chúng tôi gặp được nhau. Từ những rung động đầu tiên, chúng tôi đã cùng nhau viết nên một câu chuyện tình yêu thật đẹp, cùng sẻ chia buồn vui và vun đắp cho một tương lai hạnh phúc. Giờ đây, chúng tôi vui mừng được lật sang một chương mới, nơi hai con tim chung một nhịp đập.
              </p>
         </section>
 
-
-        <!-- Đếm ngược ngày cưới --><section class="bg-cover bg-center py-16 text-center text-white scroll-reveal" style="background-image: url('https://images.unsplash.com/photo-1515934751635-481eff0483b2?q=80&w=2070&auto=format&fit=crop')">
-            <div class="bg-black bg-opacity-40 py-12">
-                <h2 class="font-dancing text-4xl">Ngày Chung Đôi</h2>
-                <div id="countdown" class="flex justify-center gap-4 md:gap-8 mt-6 text-2xl md:text-4xl">
-                    <div><span id="days">00</span><p class="text-sm">Ngày</p></div>
-                    <div><span id="hours">00</span><p class="text-sm">Giờ</p></div>
-                    <div><span id="minutes">00</span><p class="text-sm">Phút</p></div>
-                    <div><span id="seconds">00</span><p class="text-sm">Giây</p></div>
+        <!-- === ALBUM ẢNH MỚI VỚI HIỆU ỨNG SLIDE KHI CUỘN === -->
+        <section id="gallery-section" class="relative bg-white" style="height: 400vh;">
+            <div class="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+                <h2 id="gallery-title" class="font-dancing text-5xl text-[#BF9270] transition-all duration-500 absolute top-16 md:top-24">Khoảnh Khắc Đáng Nhớ</h2>
+                <div id="gallery-stack" class="relative w-[85vw] h-[60vh] max-w-md max-h-[75vh]">
+                    <img src="https://i.postimg.cc/8cXkthvc/7b238b223694bccae585.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+                    <img src="https://i.postimg.cc/tT294h26/dc22bb4306f58cabd5e4.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+                    <img src="https://i.postimg.cc/L8TC7NXj/da7cd8693fdfb581ecce1.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+                    <img src="https://i.postimg.cc/ZqncQm2w/e11fd31934afbef1e7be2.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+                    <img src="https://i.postimg.cc/qRPgTcRY/486d1b4cbafa30a46eb2.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+                    <img src="https://i.postimg.cc/dtK3CNnN/7f10062da79b2dc5748a1.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
                 </div>
             </div>
         </section>
+
         
-        <!-- Album ảnh cưới --><section class="p-8 md:p-12 text-center scroll-reveal">
-            <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Khoảnh Khắc Đáng Nhớ</h2>
-            
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <img src="https://i.postimg.cc/8cXkthvc/7b238b223694bccae585.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
-                <img src="https://i.postimg.cc/tT294h26/dc22bb4306f58cabd5e4.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
-                <img src="https://i.postimg.cc/L8TC7NXj/da7cd8693fdfb581ecce1.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
-                <img src="https://i.postimg.cc/ZqncQm2w/e11fd31934afbef1e7be2.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
-                <img src="https://i.postimg.cc/qRPgTcRY/486d1b4cbafa30a46eb2.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
-                <img src="https://i.postimg.cc/dtK3CNnN/7f10062da79b2dc5748a1.jpg" class="rounded-lg shadow-lg object-cover w-full h-48 md:h-64 hover:scale-105 transition-transform"/>
+        <!-- Lịch Cưới --><section class="py-16 md:py-20 text-center scroll-reveal bg-white">
+            <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Lịch Cưới</h2>
+            <div class="max-w-sm mx-auto p-6 rounded-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold text-xl text-gray-800">Tháng 11, 2025</h3>
+                </div>
+                <div class="grid grid-cols-7 gap-2 text-center text-sm">
+                    <div class="font-semibold text-red-500">CN</div>
+                    <div class="font-semibold">T2</div>
+                    <div class="font-semibold">T3</div>
+                    <div class="font-semibold">T4</div>
+                    <div class="font-semibold">T5</div>
+                    <div class="font-semibold">T6</div>
+                    <div class="font-semibold">T7</div>
+                    
+                    <div></div><div></div><div></div><div></div><div></div><div></div>
+                    <div class="h-10 flex items-center justify-center">1</div>
+                    <div class="h-10 flex items-center justify-center">2</div>
+                    <div class="h-10 flex items-center justify-center">3</div>
+                    <div class="h-10 flex items-center justify-center">4</div>
+                    <div class="h-10 flex items-center justify-center">5</div>
+                    <div class="h-10 flex items-center justify-center">6</div>
+                    <div class="h-10 flex items-center justify-center">7</div>
+                    <div class="h-10 flex items-center justify-center">8</div>
+                    <div class="h-10 flex items-center justify-center">9</div>
+                    <div class="h-10 flex items-center justify-center">10</div>
+                    <div class="h-10 flex items-center justify-center">11</div>
+                    <div class="h-10 flex items-center justify-center">12</div>
+                    <div class="h-10 flex items-center justify-center">13</div>
+                    <div class="h-10 flex items-center justify-center">14</div>
+                    <div class="h-10 flex items-center justify-center">15</div>
+                    <div class="h-10 flex items-center justify-center">16</div>
+                    <div class="h-10 flex items-center justify-center">17</div>
+                    <div class="h-10 flex items-center justify-center">18</div>
+                    <div class="h-10 flex items-center justify-center">19</div>
+                    <div class="h-10 flex items-center justify-center">20</div>
+                    <div class="h-10 flex items-center justify-center">21</div>
+                    <div class="h-10 flex items-center justify-center">22</div>
+                    <div class="h-10 flex items-center justify-center">23</div>
+                    <div class="h-10 flex items-center justify-center">24</div>
+                    <div class="h-10 flex items-center justify-center">25</div>
+                    <div class="h-10 flex items-center justify-center">26</div>
+                    <div class="h-10 flex items-center justify-center">27</div>
+                    <div class="h-10 flex items-center justify-center">28</div>
+                    <div class="h-10 flex items-center justify-center">29</div>
+                    <div id="wedding-day-marker" class="calendar-day h-10 flex items-center justify-center wedding-day">
+                        <span>30</span>
+                        <i class="fas fa-heart heart-pop"></i>
+                    </div>
+                </div>
             </div>
         </section>
         
@@ -210,11 +271,10 @@
             </div>
         </section>
         
-        <!-- Bản đồ --><section class="p-8 md:p-12 text-center scroll-reveal">
+        <!-- Bản đồ --><section class="p-8 md:p-12 text-center bg-white scroll-reveal">
              <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Địa Điểm Tổ Chức</h2>
              <div class="w-full h-80 rounded-lg shadow-lg overflow-hidden">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62279.08006322964!2d108.03360444390726!3d12.531054394017688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3171f5581134a651%3A0x6b7a5223e7f4144!2zRWEgTmluZywgQ8awIEt1aW4sIMSQ4bqvayBM4bqvaywgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1696602324083!5m2!1svi!2s" 
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62279.08006322964!2d108.03360444390726!3d12.531054394017688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3171f5581134a651%3A0x6b7a5223e7f4144!2zRWEgTmluZywgQ8awIEt1aW4sIMSQ4bqvayBM4bqvaywgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1696602324083!5m2!1svi!2s" 
                     width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
              </div>
@@ -223,27 +283,19 @@
         <!-- Lời cảm ơn --><footer class="text-center p-12 scroll-reveal">
              <div class="heart-pulse text-4xl text-red-400 mb-4">❤️</div>
              <p class="font-dancing text-4xl text-[#BF9270]">Trân Trọng Cảm Ơn!</p>
-             <p class="mt-2">Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi.</p>
+             <p class="mt-2">Sự hiện diện của Quý vị là niềm vinh hạnh lớn lao cho gia đình chúng tôi.</p>
         </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- PHẦN JAVASCRIPT ĐIỀU KHIỂN HIỆU ỨNG ---
-
-            // === ĐOẠN MÃ MỚI: CHỜ FONT LOAD XONG MỚI HIỆN NỘI DUNG ===
             const coverContent = document.getElementById('cover-content');
-            document.fonts.ready.then(function () {
-                // Khi font đã tải xong, hiện nội dung trên cửa
-                coverContent.classList.remove('opacity-0');
-            });
+            document.fonts.ready.then(() => { coverContent.classList.remove('opacity-0'); });
 
-            // Hiệu ứng cánh hoa rơi
             const petalContainer = document.getElementById('petal-container');
-            const numberOfPetals = 20;
-            for (let i = 0; i < numberOfPetals; i++) {
+            for (let i = 0; i < 20; i++) {
                 const petal = document.createElement('div');
-                petal.classList.add('petal');
+                petal.className = 'petal';
                 const size = Math.random() * 10 + 5;
                 petal.style.width = `${size}px`;
                 petal.style.height = `${size * 0.7}px`;
@@ -257,17 +309,12 @@
             const openButton = document.getElementById('open-invitation');
             const mainContent = document.getElementById('main-content');
             const music = document.getElementById('background-music');
-            
             const musicControlContainer = document.getElementById('music-control-container');
             const playPauseButton = document.getElementById('play-pause');
             const playPauseIcon = playPauseButton.querySelector('i');
             const nextButton = document.getElementById('next-song');
             const prevButton = document.getElementById('prev-song');
-
-            const playlist = [
-                'song1.mp3', 'song2.mp3', 'song3.mp3', 'song4.mp3',
-                'song5.mp3', 'song6.mp3', 'song7.mp3', 'song8.mp3'
-            ];
+            const playlist = ['song1.mp3', 'song2.mp3', 'song3.mp3', 'song4.mp3', 'song5.mp3', 'song6.mp3', 'song7.mp3', 'song8.mp3'];
             let currentSongIndex = 0;
 
             function updatePlayPauseIcon() {
@@ -277,97 +324,104 @@
 
             function loadAndPlaySong(index) {
                 music.src = playlist[index];
-                const playPromise = music.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.error("Lỗi phát nhạc, cần người dùng tương tác:", error);
-                        updatePlayPauseIcon();
-                    });
-                }
+                music.play().catch(error => { console.error("Lỗi phát nhạc:", error); updatePlayPauseIcon(); });
             }
 
-            // Hiệu ứng mở cửa khi click
             openButton.addEventListener('click', () => {
                 const leftDoor = document.getElementById('left-door');
                 const rightDoor = document.getElementById('right-door');
-
-                // 1. Mờ nội dung trên cửa (đã có class transition)
                 coverContent.style.opacity = '0';
-                
-                // 2. Bắt đầu phát nhạc
                 loadAndPlaySong(currentSongIndex);
                 musicControlContainer.classList.remove('hidden');
-
-                // 3. Mở cửa sau một khoảng trễ ngắn
                 setTimeout(() => {
                     leftDoor.style.transform = 'translateX(-100%)';
                     rightDoor.style.transform = 'translateX(100%)';
                 }, 300);
-
-                // 4. Ẩn hoàn toàn lớp phủ và hiện nội dung chính sau khi cửa mở xong
                 setTimeout(() => {
                     cover.style.display = 'none';
                     mainContent.style.opacity = '1';
                     document.querySelector('.scroll-reveal')?.classList.add('visible');
-                }, 1500); // 300ms + 1200ms animation
+                }, 1500);
             });
             
-            playPauseButton.addEventListener('click', () => {
-                if (music.paused) {
-                    music.play().catch(e => console.error("Lỗi khi nhấn play:", e));
-                } else {
-                    music.pause();
-                }
-            });
-
-            nextButton.addEventListener('click', () => {
-                currentSongIndex = (currentSongIndex + 1) % playlist.length;
-                loadAndPlaySong(currentSongIndex);
-            });
-
-            prevButton.addEventListener('click', () => {
-                currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-                loadAndPlaySong(currentSongIndex);
-            });
-
+            playPauseButton.addEventListener('click', () => { music.paused ? music.play() : music.pause(); });
+            nextButton.addEventListener('click', () => { currentSongIndex = (currentSongIndex + 1) % playlist.length; loadAndPlaySong(currentSongIndex); });
+            prevButton.addEventListener('click', () => { currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length; loadAndPlaySong(currentSongIndex); });
             music.addEventListener('play', updatePlayPauseIcon);
             music.addEventListener('pause', updatePlayPauseIcon);
             music.addEventListener('ended', () => { nextButton.click(); });
 
-            // Hiệu ứng trượt lên khi cuộn
             const scrollElements = document.querySelectorAll('.scroll-reveal');
+            const weddingDayMarker = document.getElementById('wedding-day-marker');
+            
             const elementObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
+                entries.forEach(entry => { 
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
+                        // Thêm hiệu ứng cho trái tim lịch
+                        if (entry.target.id === 'wedding-day-marker') {
+                            entry.target.querySelector('.fa-heart').classList.add('visible');
+                        }
                     }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.2 }); // Tăng threshold để chắc chắn nhìn thấy
 
             scrollElements.forEach(el => elementObserver.observe(el));
+            elementObserver.observe(weddingDayMarker);
 
-            // Đồng hồ đếm ngược
-            const weddingDate = new Date("Nov 30, 2025 09:00:00").getTime();
-            const countdownInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = weddingDate - now;
 
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    document.getElementById("countdown").innerHTML = "<p>Lễ cưới đã diễn ra!</p>";
-                    return;
+            // === LOGIC MỚI CHO HIỆU ỨNG ALBUM ẢNH VÀ BANNER PARALLAX ===
+            const gallerySection = document.getElementById('gallery-section');
+            const galleryImages = document.querySelectorAll('.gallery-image');
+            const galleryTitle = document.getElementById('gallery-title');
+            const bannerText = document.getElementById('banner-text');
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+
+                // 1. Hiệu ứng Parallax cho Banner Text
+                if (scrollY < window.innerHeight * 0.7) {
+                    bannerText.style.transform = `translateY(${scrollY * 0.3}px)`;
                 }
+                
+                // 2. Hiệu ứng Album Ảnh
+                const rect = gallerySection.getBoundingClientRect();
+                const scrollableHeight = gallerySection.scrollHeight - window.innerHeight;
+                
+                if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                    const progress = Math.max(0, -rect.top / scrollableHeight);
+                    
+                    galleryTitle.style.opacity = Math.max(0, 1 - progress * 5);
+                    galleryTitle.style.transform = `translateY(${progress * -50}px) scale(${1 - progress * 0.1})`;
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    galleryImages.forEach((img, index) => {
+                        const totalImages = galleryImages.length;
+                        const start = index / totalImages;
+                        const end = (index + 1) / totalImages;
+                        
+                        let localProgress = (progress - start) / (end - start);
+                        localProgress = Math.max(0, Math.min(1, localProgress));
 
-                document.getElementById("days").innerText = String(days).padStart(2, '0');
-                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-            }, 1000);
+                        if (progress >= start) {
+                            const initialTranslateY = 50; // Bắt đầu từ dưới
+                            const initialScale = 0.8;
+                            
+                            const translateY = initialTranslateY * (1 - localProgress);
+                            const scale = initialScale + (1 - initialScale) * localProgress;
+                            const opacity = localProgress;
+
+                            // Khi ảnh gần kết thúc, mờ đi
+                            const fadeOutProgress = Math.max(0, (localProgress - 0.7) / 0.3);
+                            
+                            img.style.opacity = opacity - fadeOutProgress;
+                            img.style.transform = `translateY(${translateY}%) scale(${scale})`;
+                            img.style.zIndex = index;
+                        } else {
+                            img.style.opacity = 0;
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>
