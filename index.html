@@ -181,8 +181,7 @@
              </p>
         </section>
 
-        <!-- === ALBUM ẢNH MỚI VỚI HIỆU ỨNG "DÒNG CHẢY KÝ ỨC" === -->
-        <section id="gallery-section" class="py-16 md:py-24 bg-white scroll-reveal">
+        <!-- Album Ảnh --><section id="gallery-section" class="py-16 md:py-24 bg-white scroll-reveal">
             <h2 class="font-dancing text-5xl text-[#BF9270] text-center mb-12">Khoảnh Khắc Đáng Nhớ</h2>
             <div class="w-full flex justify-center gap-4 px-4 overflow-hidden">
                 <!-- Cột 1 -->
@@ -281,6 +280,25 @@
                     width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
              </div>
+        </section>
+
+        <!-- === MỤC MỚI: VẺ ĐẸP TÂY NGUYÊN === -->
+        <section class="p-8 md:p-12 text-center bg-white scroll-reveal">
+            <h2 class="font-dancing text-4xl text-[#BF9270] mb-4">Về Miền Đất Nắng Gió</h2>
+            <p class="max-w-lg mx-auto leading-relaxed mb-8">
+                Hôn lễ được tổ chức tại Đắk Lắk, trái tim của Tây Nguyên hùng vĩ. Mời bạn cùng chiêm ngưỡng một vài nét đẹp của vùng đất bazan đầy nắng và gió này.
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-4">
+                    <img src="https://i.postimg.cc/QtSdzxNz/photo-1-15941275321391747950138.jpg" alt="Voi ở Đắk Lắk" class="rounded-lg shadow-lg object-cover w-full h-auto"/>
+                    <img src="https://i.postimg.cc/Vv6kPQ52/9482003-JPG.jpg" alt="Thác nước Tây Nguyên" class="rounded-lg shadow-lg object-cover w-full h-auto"/>
+                </div>
+                <div class="flex flex-col gap-4 mt-12 md:mt-16">
+                    <img src="https://i.postimg.cc/W3S1ybpQ/hoa-ca-phe4-00474100.jpg" alt="Hoa cà phê" class="rounded-lg shadow-lg object-cover w-full h-auto"/>
+                    <img src="https://i.postimg.cc/7h6Zr8bm/nga-6-buon-ma-thuot-1-nh-S-u-t-m.jpg" alt="Ngã 6 Buôn Ma Thuột" class="rounded-lg shadow-lg object-cover w-full h-auto"/>
+                    <img src="https://i.postimg.cc/1Xt31hfQ/thac-Dak-Lak02-1650454521-7409-1650455161.webp" alt="Thác Dray Nur" class="rounded-lg shadow-lg object-cover w-full h-auto"/>
+                </div>
+            </div>
         </section>
 
         <!-- Lời cảm ơn --><footer class="text-center p-12 scroll-reveal">
@@ -383,28 +401,21 @@
                 const scrollY = window.scrollY;
                 const parallaxSpeed = 0.3;
 
-                // 1. Hiệu ứng Parallax cho Banner Text
                 if (scrollY < window.innerHeight * 0.7) {
                     bannerText.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
                 }
 
-                // 2. Hiệu ứng cho Album ảnh "Dòng chảy ký ức"
                 const sectionRect = gallerySection.getBoundingClientRect();
                 
-                // Chỉ thực hiện khi section nằm trong viewport
                 if (sectionRect.top < window.innerHeight && sectionRect.bottom > 0) {
-                    // Tính toán delta scroll
-                    const delta = scrollY - lastScrollY;
+                    const scrollDelta = scrollY - lastScrollY;
                     
-                    // Lấy transform hiện tại
                     const transform1 = new DOMMatrix(window.getComputedStyle(galleryCol1).transform);
-                    const transform2 = new DOMMatrix(window.getComputedStyle(galleryCol2).transform);
-
-                    // Cập nhật vị trí mới
-                    const newY1 = transform1.m42 + delta * -0.1;
-                    const newY2 = transform2.m42 + delta * -0.15;
-
+                    const newY1 = transform1.m42 + scrollDelta * -0.1;
                     galleryCol1.style.transform = `translateY(${newY1}px)`;
+                    
+                    const transform2 = new DOMMatrix(window.getComputedStyle(galleryCol2).transform);
+                    const newY2 = transform2.m42 + scrollDelta * -0.15;
                     galleryCol2.style.transform = `translateY(${newY2}px)`;
                 }
                 lastScrollY = scrollY;
