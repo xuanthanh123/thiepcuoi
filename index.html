@@ -81,7 +81,7 @@
             transform: translateX(-50%); font-size: 8px; color: #d9534f;
         }
         
-        /* === HIỆU ỨNG MỚI: KEN BURNS CHO BANNER === */
+        /* Hiệu ứng Ken Burns cho Banner */
         @keyframes ken-burns {
             0% { transform: scale(1.05) rotate(0.5deg); }
             100% { transform: scale(1) rotate(-0.5deg); }
@@ -90,7 +90,7 @@
             animation: ken-burns 20s infinite alternate ease-in-out;
         }
 
-        /* === HIỆU ỨNG MỚI: POP-IN CHO TRÁI TIM LỊCH === */
+        /* Hiệu ứng Pop-in cho trái tim lịch */
         @keyframes pop-in {
             0% { transform: scale(0); }
             60% { transform: scale(1.3); }
@@ -181,21 +181,24 @@
              </p>
         </section>
 
-        <!-- === ALBUM ẢNH MỚI VỚI HIỆU ỨNG SLIDE KHI CUỘN === -->
-        <section id="gallery-section" class="relative bg-white" style="height: 400vh;">
-            <div class="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
-                <h2 id="gallery-title" class="font-dancing text-5xl text-[#BF9270] transition-all duration-500 absolute top-16 md:top-24">Khoảnh Khắc Đáng Nhớ</h2>
-                <div id="gallery-stack" class="relative w-[85vw] h-[60vh] max-w-md max-h-[75vh]">
-                    <img src="https://i.postimg.cc/8cXkthvc/7b238b223694bccae585.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
-                    <img src="https://i.postimg.cc/tT294h26/dc22bb4306f58cabd5e4.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
-                    <img src="https://i.postimg.cc/L8TC7NXj/da7cd8693fdfb581ecce1.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
-                    <img src="https://i.postimg.cc/ZqncQm2w/e11fd31934afbef1e7be2.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
-                    <img src="https://i.postimg.cc/qRPgTcRY/486d1b4cbafa30a46eb2.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
-                    <img src="https://i.postimg.cc/dtK3CNnN/7f10062da79b2dc5748a1.jpg" class="gallery-image absolute inset-0 w-full h-full object-cover rounded-xl shadow-2xl transition-all duration-500 ease-out" />
+        <!-- === ALBUM ẢNH MỚI VỚI HIỆU ỨNG "DÒNG CHẢY KÝ ỨC" === -->
+        <section id="gallery-section" class="py-16 md:py-24 bg-white scroll-reveal">
+            <h2 class="font-dancing text-5xl text-[#BF9270] text-center mb-12">Khoảnh Khắc Đáng Nhớ</h2>
+            <div class="w-full flex justify-center gap-4 px-4 overflow-hidden">
+                <!-- Cột 1 -->
+                <div id="gallery-col-1" class="w-1/2 flex flex-col gap-4">
+                    <img src="https://i.postimg.cc/8cXkthvc/7b238b223694bccae585.jpg" class="w-full h-auto rounded-lg shadow-lg" />
+                    <img src="https://i.postimg.cc/L8TC7NXj/da7cd8693fdfb581ecce1.jpg" class="w-full h-auto rounded-lg shadow-lg" />
+                    <img src="https://i.postimg.cc/qRPgTcRY/486d1b4cbafa30a46eb2.jpg" class="w-full h-auto rounded-lg shadow-lg" />
+                </div>
+                <!-- Cột 2 -->
+                <div id="gallery-col-2" class="w-1/2 flex flex-col gap-4 mt-24">
+                     <img src="https://i.postimg.cc/tT294h26/dc22bb4306f58cabd5e4.jpg" class="w-full h-auto rounded-lg shadow-lg" />
+                    <img src="https://i.postimg.cc/ZqncQm2w/e11fd31934afbef1e7be2.jpg" class="w-full h-auto rounded-lg shadow-lg" />
+                    <img src="https://i.postimg.cc/dtK3CNnN/7f10062da79b2dc5748a1.jpg" class="w-full h-auto rounded-lg shadow-lg" />
                 </div>
             </div>
         </section>
-
         
         <!-- Lịch Cưới --><section class="py-16 md:py-20 text-center scroll-reveal bg-white">
             <h2 class="font-dancing text-4xl text-[#BF9270] mb-8">Lịch Cưới</h2>
@@ -358,69 +361,53 @@
                 entries.forEach(entry => { 
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        // Thêm hiệu ứng cho trái tim lịch
                         if (entry.target.id === 'wedding-day-marker') {
                             entry.target.querySelector('.fa-heart').classList.add('visible');
                         }
                     }
                 });
-            }, { threshold: 0.2 }); // Tăng threshold để chắc chắn nhìn thấy
+            }, { threshold: 0.2 });
 
             scrollElements.forEach(el => elementObserver.observe(el));
             elementObserver.observe(weddingDayMarker);
 
-
-            // === LOGIC MỚI CHO HIỆU ỨNG ALBUM ẢNH VÀ BANNER PARALLAX ===
+            // === LOGIC HIỆU ỨNG ALBUM ẢNH VÀ BANNER PARALLAX - ĐÃ SỬA LỖI ===
             const gallerySection = document.getElementById('gallery-section');
-            const galleryImages = document.querySelectorAll('.gallery-image');
-            const galleryTitle = document.getElementById('gallery-title');
+            const galleryCol1 = document.getElementById('gallery-col-1');
+            const galleryCol2 = document.getElementById('gallery-col-2');
             const bannerText = document.getElementById('banner-text');
+
+            let lastScrollY = window.scrollY;
 
             window.addEventListener('scroll', () => {
                 const scrollY = window.scrollY;
+                const parallaxSpeed = 0.3;
 
                 // 1. Hiệu ứng Parallax cho Banner Text
                 if (scrollY < window.innerHeight * 0.7) {
-                    bannerText.style.transform = `translateY(${scrollY * 0.3}px)`;
+                    bannerText.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
                 }
+
+                // 2. Hiệu ứng cho Album ảnh "Dòng chảy ký ức"
+                const sectionRect = gallerySection.getBoundingClientRect();
                 
-                // 2. Hiệu ứng Album Ảnh
-                const rect = gallerySection.getBoundingClientRect();
-                const scrollableHeight = gallerySection.scrollHeight - window.innerHeight;
-                
-                if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-                    const progress = Math.max(0, -rect.top / scrollableHeight);
+                // Chỉ thực hiện khi section nằm trong viewport
+                if (sectionRect.top < window.innerHeight && sectionRect.bottom > 0) {
+                    // Tính toán delta scroll
+                    const delta = scrollY - lastScrollY;
                     
-                    galleryTitle.style.opacity = Math.max(0, 1 - progress * 5);
-                    galleryTitle.style.transform = `translateY(${progress * -50}px) scale(${1 - progress * 0.1})`;
+                    // Lấy transform hiện tại
+                    const transform1 = new DOMMatrix(window.getComputedStyle(galleryCol1).transform);
+                    const transform2 = new DOMMatrix(window.getComputedStyle(galleryCol2).transform);
 
-                    galleryImages.forEach((img, index) => {
-                        const totalImages = galleryImages.length;
-                        const start = index / totalImages;
-                        const end = (index + 1) / totalImages;
-                        
-                        let localProgress = (progress - start) / (end - start);
-                        localProgress = Math.max(0, Math.min(1, localProgress));
+                    // Cập nhật vị trí mới
+                    const newY1 = transform1.m42 + delta * -0.1;
+                    const newY2 = transform2.m42 + delta * -0.15;
 
-                        if (progress >= start) {
-                            const initialTranslateY = 50; // Bắt đầu từ dưới
-                            const initialScale = 0.8;
-                            
-                            const translateY = initialTranslateY * (1 - localProgress);
-                            const scale = initialScale + (1 - initialScale) * localProgress;
-                            const opacity = localProgress;
-
-                            // Khi ảnh gần kết thúc, mờ đi
-                            const fadeOutProgress = Math.max(0, (localProgress - 0.7) / 0.3);
-                            
-                            img.style.opacity = opacity - fadeOutProgress;
-                            img.style.transform = `translateY(${translateY}%) scale(${scale})`;
-                            img.style.zIndex = index;
-                        } else {
-                            img.style.opacity = 0;
-                        }
-                    });
+                    galleryCol1.style.transform = `translateY(${newY1}px)`;
+                    galleryCol2.style.transform = `translateY(${newY2}px)`;
                 }
+                lastScrollY = scrollY;
             });
         });
     </script>
